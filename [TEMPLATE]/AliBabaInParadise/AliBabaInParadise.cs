@@ -28,9 +28,6 @@ namespace Problem
         
         static public int[,] resultOfItems;  // Array to store the maximum profit.
         
-        // ############ backtraceSolutionOfSelectedItems For using extra storage to store selected items ==> Not need this in this problem
-        //static public bool[,] backtraceSolutionOfSelectedItems;  // Array to keep track of the items selected for the optimal selectedItems
-        
         static public bool ValidateInputs(int camelsLoad, int itemsCount, int[] weights, int[] profits, string functionName)
         {
             if(functionName == "SolveValue")
@@ -69,43 +66,13 @@ namespace Problem
             //REMOVE THIS LINE BEFORE START CODING
             //throw new NotImplementedException();
             
-            /*
-            int[,] resultOfItems = new int[itemsCount + 1, camelsLoad + 1];
-            for (int i = 1; i <= itemsCount; i++)
-            {
-                for (int j = 1; j <= camelsLoad; j++)
-                {
-                    if (j >= weights[i - 1])
-                    {
-                        if (profits[i - 1] + resultOfItems[i, j - weights[i - 1]] > resultOfItems[i - 1, j])
-                        {
-                            resultOfItems[i, j] = profits[i - 1] + resultOfItems[i, j - weights[i - 1]];
-                        }
-                        else
-                        {
-                            resultOfItems[i, j] = resultOfItems[i - 1, j];
-                        }
-                    }
-                    else
-                    {
-                        resultOfItems[i, j] = resultOfItems[i - 1, j];
-                    }
-                }
-            }
-            */
 
             if(ValidateInputs(camelsLoad, itemsCount, weights, profits, "SolveValue")) // Check for invalid inputs
             {
-                // Initialize the resultOfItems and backtraceSolutionOfSelectedItems arrays
-                // Add 1 to the itemsCount and camelsLoad to make the arrays one-based (to avoid index-out-of-bounds errors)
+                
                 //Initialize
                 resultOfItems = new int[itemsCount + 1, camelsLoad + 1]; // # varying parameters in the function is (camelsLoad, itemsCount)
                 
-                //int[,] resultOfItems = new int[itemsCount + 1, camelsLoad + 1]; // # varying parameters in the function is (camelsLoad, itemsCount)
-                
-                // ############ backtraceSolutionOfSelectedItems For using extra storage to store selected items ==> Not need this in this problem
-                //backtraceSolutionOfSelectedItems = new bool[itemsCount + 1, camelsLoad + 1];
-
                 // Fill the resultOfItems and backtraceSolutionOfSelectedItems arrays by solving smaller subproblems and combining them
                 for (int i = 1; i <= itemsCount; i++)  // start from 1 because the array is one based 
                 {
@@ -113,35 +80,23 @@ namespace Problem
                     {
                         if (j >= weights[i - 1]) // If the current item can fit in the remaining load
                         {
-                            /*
-                               Calculate the maximum profit that can be obtained by either taking the current item or not
-                               choose the maximum between two cases:
-                               1. The current item is included in the optimal selectedItems and we add its profit to the profit of the remaining weight limit (j - weights[i-1]) which is already computed (resultOfItems[i, j - weights[i - 1]])
-                               2. The current item is not included in the optimal selectedItems and we move on to the next item (resultOfItems[i - 1, j])
-                            */
+                            
                             if (profits[i - 1] + resultOfItems[i, j - weights[i - 1]] > resultOfItems[i - 1, j])
                             {
                                 resultOfItems[i, j] = profits[i - 1] + resultOfItems[i, j - weights[i - 1]];
 
-                                // ############ backtraceSolutionOfSelectedItems For using extra storage to store selected items ==> Not need this in this problem
-                                // backtraceSolutionOfSelectedItems[i, j] = true; // Mark the current item as selected in the optimal selectedItems
                             }
                             else
                             {
                                 resultOfItems[i, j] = resultOfItems[i - 1, j];
 
-                                // ############ backtraceSolutionOfSelectedItems For using extra storage to store selected items ==> Not need this in this problem
-                                // backtraceSolutionOfSelectedItems[i, j] = false; // The default value of an array of bool is "false"
                             }
-                            // ############ backtraceSolutionOfSelectedItems For using extra storage to store selected items ==> Not need this in this problem
                             
                         }
                         else //Retrieve
                         {
                             resultOfItems[i, j] = resultOfItems[i - 1, j]; // If the current item is too heavy to fit in the remaining load, skip it
                             
-                            // ############ backtraceSolutionOfSelectedItems For using extra storage to store selected items ==> Not need this in this problem
-                            //backtraceSolutionOfSelectedItems[i, j] = false; // The default value of an array of bool is "false"
                         }
                     }
                 }
@@ -170,71 +125,13 @@ namespace Problem
             
             if(ValidateInputs(camelsLoad, itemsCount, weights, profits, "ConstructSolution")) // Check for invalid inputs
             {
-                // #################  Old code that i was using to resolve solution that is actually solved in function SolveSolution
     
-                // Initialize the resultOfItems and backtraceSolutionOfSelectedItems arrays
-                // Add 1 to the itemsCount and camelsLoad to make the arrays one-based (to avoid index-out-of-bounds errors)
-                //Initialize
-                //resultOfItems = new int[itemsCount + 1, camelsLoad + 1]; // # varying parameters in the function is (camelsLoad, itemsCount)
-                /*
-                int[,] resultOfItems = new int[itemsCount + 1, camelsLoad + 1]; // # varying parameters in the function is (camelsLoad, itemsCount)
-                
-                // ############ backtraceSolutionOfSelectedItems For using extra storage to store selected items ==> Not need this in this problem
-                //backtraceSolutionOfSelectedItems = new bool[itemsCount + 1, camelsLoad + 1];
-
-                // Fill the resultOfItems and backtraceSolutionOfSelectedItems arrays by solving smaller subproblems and combining them
-                for (int i = 1; i <= itemsCount; i++)  // start from 1 because the array is one based 
-                {
-                    for (int j = 1; j <= camelsLoad; j++) // start from 1 because the array is one based
-                    {
-                        if (j >= weights[i - 1]) // If the current item can fit in the remaining load
-                        {
-                            
-                               //Calculate the maximum profit that can be obtained by either taking the current item or not
-                               //choose the maximum between two cases:
-                               //1. The current item is included in the optimal selectedItems and we add its profit to the profit of the remaining weight limit (j - weights[i-1]) which is already computed (resultOfItems[i, j - weights[i - 1]])
-                               //2. The current item is not included in the optimal selectedItems and we move on to the next item (resultOfItems[i - 1, j])
-                            
-                            if (profits[i - 1] + resultOfItems[i, j - weights[i - 1]] > resultOfItems[i - 1, j])
-                            {
-                                resultOfItems[i, j] = profits[i - 1] + resultOfItems[i, j - weights[i - 1]];
-
-                                // ############ backtraceSolutionOfSelectedItems For using extra storage to store selected items ==> Not need this in this problem
-                                // backtraceSolutionOfSelectedItems[i, j] = true; // Mark the current item as selected in the optimal selectedItems
-                            }
-                            else
-                            {
-                                resultOfItems[i, j] = resultOfItems[i - 1, j];
-
-                                // ############ backtraceSolutionOfSelectedItems For using extra storage to store selected items ==> Not need this in this problem
-                                // backtraceSolutionOfSelectedItems[i, j] = false; // The default value of an array of bool is "false"
-                            }
-                            // ############ backtraceSolutionOfSelectedItems For using extra storage to store selected items ==> Not need this in this problem
-                            
-                        }
-                        else //Retrieve
-                        {
-                            resultOfItems[i, j] = resultOfItems[i - 1, j]; // If the current item is too heavy to fit in the remaining load, skip it
-                            
-                            // ############ backtraceSolutionOfSelectedItems For using extra storage to store selected items ==> Not need this in this problem
-                            //backtraceSolutionOfSelectedItems[i, j] = false; // The default value of an array of bool is "false"
-                        }
-                    }
-                }
-                if (resultOfItems[itemsCount, camelsLoad] == 0)
-                {
-                    return null;
-                }
-                */
-
                 List<Tuple<int, int>> selectedItems = new List<Tuple<int, int>>();  // I Used List because the length of selected items is not known
             
                 while (itemsCount > 0 && camelsLoad > 0) // Loop through items and camels load
                 {
 
-                    // ############ backtraceSolutionOfSelectedItems For using extra storage to store selected items ==> Not need this in this problem
                     
-                    //if (backtraceSolutionOfSelectedItems[itemsCount, camelsLoad]) // If this item was selected ==> if (backtraceSolutionOfSelectedItems[itemsCount, camelsLoad] == true)
                     
                     if(resultOfItems[itemsCount, camelsLoad] != resultOfItems[itemsCount - 1, camelsLoad]) // If this item was selected ==> its value != previous value
                     {
